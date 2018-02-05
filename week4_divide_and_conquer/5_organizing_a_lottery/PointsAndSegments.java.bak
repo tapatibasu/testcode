@@ -1,0 +1,84 @@
+import java.util.*;
+
+class Segment {
+   Integer start; 
+   Integer end; 
+   Segment ( Integer s, Integer e) { start = s; end = e; }
+}
+class SortbyStart implements Comparator<Segment>
+   {
+    public int compare(Segment s1, Segment s2 )
+    {
+        return s1.start.compareTo(s2.start);
+    }
+  }
+   class SortbyEnd implements Comparator<Segment>
+   {
+    public int compare(Segment s1, Segment s2 )
+    {
+        return s1.end.compareTo(s2.end);
+    }
+   }
+
+
+public class PointsAndSegments {
+    private static int[] fastCountSegments(Segment[] seg,int[] points) {
+        int[] cnt = new int[points.length];
+        Arrays.sort(seg, new SortbyStart()); 
+        for (int i = 0; i < points.length; i++) {
+            int pos = Arrays.binarySearch(seg, new Segment(points[i], -1), new SortbyStart());
+            //int osition = findStartPosition(seg, points[i]);
+            if (pos < 0) {
+               pos = pos + 1;
+               pos = pos * -1;
+            }
+            Segment [] t = Arrays.copyOfRange(seg, 0, pos);
+            if (t.length == 0) continue; 
+            Arrays.sort(t, new SortbyEnd());
+            pos = Arrays.binarySearch(t, new Segment(-1, points[i]), new SortbyEnd());;
+            if (pos < 0) {
+               pos = pos + 1;
+               pos = pos * -1;
+            }
+            cnt[i] = t.length - pos;
+        }
+        return cnt;
+    }
+
+    private static int[] naiveCountSegments(int[] starts, int[] ends, int[] points) {
+        int[] cnt = new int[points.length];
+        for (int i = 0; i < points.length; i++) {
+            for (int j = 0; j < starts.length; j++) {
+                if (starts[j] <= points[i] && points[i] <= ends[j]) {
+                    cnt[i]++;
+                }
+            }
+        }
+        return cnt;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int n, m;
+        n = scanner.nextInt();
+        m = scanner.nextInt();
+        int[] starts = new int[n];
+        int[] ends = new int[n];
+        int[] points = new int[m];
+        Segment [] seg = new Segment[n];
+        for (int i = 0; i < n; i++) {
+            starts[i] = scanner.nextInt();
+            ends[i] = scanner.nextInt();
+            seg[i] = new Segment(starts[i], ends[i]);
+        }
+        for (int i = 0; i < m; i++) {
+            points[i] = scanner.nextInt();
+        }
+        int [] cnt = fastCountSegments(seg, points);
+        //int[] cnt = naiveCountSegments(starts, ends, points);
+        for (int x : cnt) {
+            System.out.print(x + " ");
+        }
+    }
+}
+
