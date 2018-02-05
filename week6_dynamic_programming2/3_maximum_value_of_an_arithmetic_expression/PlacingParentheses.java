@@ -22,7 +22,6 @@ public class PlacingParentheses {
                 max[i][j] = res[1];
             }
         }
-        // max of eval(1..n)
         return max[0][n - 1];
     }
 private static long [] getMinAndMax(String exp, int i, int j,

@@ -43,21 +43,6 @@ class Calc {
 public class PrimitiveCalculator {
     private static List<Integer> optimal_sequence(int n) {
         List<Integer> sequence = new Calc(n).optimal();
-
-/*
-        List<Integer> sequence = new ArrayList<Integer>();
-        while (n >= 1) {
-            sequence.add(n);
-            if (n % 3 == 0) {
-                n /= 3;
-            } else if (n % 2 == 0) {
-                n /= 2;
-            } else {
-                n -= 1;
-            }
-        }
-        Collections.reverse(sequence);
-*/
         return sequence;
     }
 
