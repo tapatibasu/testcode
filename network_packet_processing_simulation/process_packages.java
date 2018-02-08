@@ -1,6 +1,5 @@
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 class Request {
     public Request(int arrival_time, int process_time) {
@@ -26,38 +25,40 @@ class Buffer {
     public Buffer(int size) {
         this.size_ = size;
         this.finish_time_ = new LinkedList<Integer>();
-        this.buf_ = new LinkedList<Integer>();
-        start = 0; 
+        this.end_ = 0; 
     }
 
     public Response Process(Request request) {
         int t = request.arrival_time; 
-        if (t > finish_time_.get(finish_time_.size()-1)) 
-        {
-            if (!buf_.isEmpty())
-            {
-                Request r = buf_.remove();
-                finish_time_.add(t + r.process_time());
-                buf_.add(request);
+        while (finish_time_.isEmpty() == false) {
+             if (finish_time_.peek() <= t) {
+                  finish_time_.remove();
+             }
+             else {
+                  break; 
+             }
+        }
+        if (finish_time_.size() < size_) {
+            if (finish_time_.size() == 0) {
+                end_ = t +  request.process_time;
+                finish_time_.add(end_);
                 return new Response(false, t);
             }
-            else 
-            {
-                finish_time_.add(t + r.process_time());
-                return new Response(false, t);
+            else {
+                int old = end_;
+                end_ += request.process_time; 
+                finish_time_.add(end_);
+            	return new Response(false, old);
             }
         }
-        else {
-            if (buf_.size() == size_) 
-                return new Response(true, -1);
-            buf_.add(request);
-        }
+        else 
+		return new Response(true, -1);
+    
     }
 
     private int size_;
-    private List<Integer> finish_time_;
-    private Queue<Integer> buf_;
-    private int start;
+    private Queue<Integer> finish_time_;
+    private int end_; 
 }
 
 class process_packages {
